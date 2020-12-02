@@ -25,7 +25,7 @@ class receipt:
 		print("Date:                  " + str(self.date))
 		print("Method of Payment:     " + str(self.method))
 		print("Comments:              " + str(self.comments))
-		print("ID Number:             " + str(self.id))
+		print("id Number:             " + str(self.id))
 
 
 class method_of_payment:
@@ -65,47 +65,47 @@ def make_receipt(string):
 	temp_receipt.date = attr[2]
 	temp_receipt.method = attr[3]
 	temp_receipt.comments = attr[4]
-	temp_receipt.i = attr[5]
+	temp_receipt.id = attr[5]
 	return temp_receipt
 
 
 def get_income():
-	with open("income.txt") as file:
+	with open("income") as file:
 	    my_income = [line.strip() for line in file]
 	    file.close()
 	return my_income;
 
 
 def get_expenses():
-	with open("expenses.txt") as file:
+	with open("expenses") as file:
 	    my_expenses = [line.strip() for line in file]
 	    file.close()
 	return my_expenses
 
 
 def get_belongings():
-	with open("belongings.txt") as file:
+	with open("belongings") as file:
 	    my_belongings = [line.strip() for line in file]
 	    file.close()
 	return my_belongings
 
 
 def get_methods():
-	with open("methods.txt") as file:
+	with open("methods") as file:
 	    list_of_methods = [line.strip() for line in file]
 	    file.close()
 	return list_of_methods
 
 
 def get_persons():
-	with open("persons.txt") as file:
+	with open("persons") as file:
 	    list_of_persons = [line.strip() for line in file]
 	    file.close()
 	return list_of_persons
 
 
 def get_oganisations():
-	with open("organisations.txt") as file:
+	with open("organisations") as file:
 	    list_of_organisations = [line.strip() for line in file]
 	    file.close()
 	return list_of_organisations
@@ -116,7 +116,7 @@ def add_income():
 	temp_receipt = receipt()
 	temp_receipt.user_init()
 	print("Object created.Saving to file..\n")
-	save_receipt(temp_receipt,"income.txt")
+	save_receipt(temp_receipt,"income")
 	print("Done!\n")
 
 
@@ -125,7 +125,7 @@ def add_expense():
 	temp_receipt = receipt()
 	temp_receipt.user_init()
 	print("Object created.Saving to file..\n")
-	save_receipt(temp_receipt,"expenses.txt")
+	save_receipt(temp_receipt,"expenses")
 	print("Done!\n")
 
 def print_list(filename):
@@ -160,8 +160,8 @@ def graphical_add_receipt():
 			temp_receipt.date = app.getEntry("Date")
 			temp_receipt.method = app.getEntry("Method")
 			temp_receipt.comments = app.getEntry("Commends") 
-			temp_receipt.id =  app.getEntry("Id")
-			save_receipt(temp_receipt,"income.txt")
+			temp_receipt.id =  app.getEntry("identification")
+			save_receipt(temp_receipt,"income")
 			print("saved the income..\n")
 			app.stop()
 		if button == "SaveAsExpense":
@@ -171,9 +171,9 @@ def graphical_add_receipt():
 			temp_receipt.date = app.getEntry("Date")
 			temp_receipt.method = app.getEntry("Method")
 			temp_receipt.comments = app.getEntry("Commends") 
-			temp_receipt.id =  app.getEntry("Id")
-			save_receipt(temp_receipt,"expenses.txt")
-			print("saved the income..\n")
+			temp_receipt.id =  app.getEntry("identification")
+			save_receipt(temp_receipt,"expenses")
+			print("saved the expenses..\n")
 			app.stop()
 
 	# create a GUI variable called app
@@ -189,7 +189,7 @@ def graphical_add_receipt():
 	app.addLabelEntry("Date")
 	app.addLabelEntry("Method")
 	app.addLabelEntry("Commends")
-	app.addLabelEntry("Id")
+	app.addLabelEntry("identification")
 
 	# link the buttons to the function called press
 	app.addButtons(["SaveAsIncome", "SaveAsExpense", "Exit"], press)
@@ -205,9 +205,9 @@ while(choice!="0"):
 	if (choice == "1"):
 		graphical_add_receipt()
 	elif(choice == "2"):
-		print_list("income.txt")
+		print_list("income")
 	elif(choice == "3"):
-		print_list("expenses.txt")
+		print_list("expenses")
 	else:
 		print("Please enter a valid option(0-3).\n")
 
