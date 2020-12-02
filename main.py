@@ -1,4 +1,6 @@
 
+from appJar import gui
+
 class receipt:
 	def __init__(self,amount = "",recipient = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
 			self.amount = ""
@@ -146,22 +148,70 @@ list_of_methods = []
 list_of_persons = []
 list_of_organisations = []
 
+def graphical_add_receipt():
+	# handle button events
+	def press(button):
+		if button == "Exit":
+			app.stop()
+		if button == "SaveAsIncome":
+			temp_receipt = receipt()
+			temp_receipt.amount = app.getEntry("Amount")
+			temp_receipt.recipient = app.getEntry("Recipient")
+			temp_receipt.date = app.getEntry("Date")
+			temp_receipt.method = app.getEntry("Method")
+			temp_receipt.comments = app.getEntry("Commends") 
+			temp_receipt.id =  app.getEntry("Id")
+			save_receipt(temp_receipt,"income.txt")
+			print("saved the income..\n")
+			app.stop()
+		if button == "SaveAsExpense":
+			temp_receipt = receipt()
+			temp_receipt.amount = app.getEntry("Amount")
+			temp_receipt.recipient = app.getEntry("Recipient")
+			temp_receipt.date = app.getEntry("Date")
+			temp_receipt.method = app.getEntry("Method")
+			temp_receipt.comments = app.getEntry("Commends") 
+			temp_receipt.id =  app.getEntry("Id")
+			save_receipt(temp_receipt,"expenses.txt")
+			print("saved the income..\n")
+			app.stop()
+
+	# create a GUI variable called app
+	app = gui("Receipt Adder", "500x400")
+	app.setBg("green")
+	app.setFont(15)
+
+	# add & configure widgets - widgets get a name, to help referencing them later
+	app.addLabel("title", "Add a Receipt")
+
+	app.addLabelEntry("Amount")
+	app.addLabelEntry("Recipient")
+	app.addLabelEntry("Date")
+	app.addLabelEntry("Method")
+	app.addLabelEntry("Commends")
+	app.addLabelEntry("Id")
+
+	# link the buttons to the function called press
+	app.addButtons(["SaveAsIncome", "SaveAsExpense", "Exit"], press)
+
+	app.setFocus("Amount")
+	# start the GUI
+	app.go()
+
 
 choice = -1
 
 while(choice!="0"):
 	if (choice == "1"):
-		add_income()
-	elif (choice == "2"):
-		add_expense()
-	elif(choice == "3"):
+		graphical_add_receipt()
+	elif(choice == "2"):
 		print_list("income.txt")
-	elif(choice == "4"):
+	elif(choice == "3"):
 		print_list("expenses.txt")
 	else:
-		print("Please enter a valid option(0-4).\n")
+		print("Please enter a valid option(0-3).\n")
 
-	choice = input("1:add income, 2:add expense, 3:print income, 4:print expenses, 0:exit:   ")
+	choice = input("1:add receipt(income or expense), 2:print income, 3:print expenses, 0:exit:   ")
 
 
 
