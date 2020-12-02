@@ -1,3 +1,0 @@
-card
-physical
-method3
