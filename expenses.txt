@@ -1,0 +1,16 @@
+exp1
+bill2
+exp5
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,no_comment,simera,cash,0
+15,nikos,simera,cash,no_comment,0
