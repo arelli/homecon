@@ -8,12 +8,12 @@ class receipt:
 		self.comments = comments
 		self.id = 0
 	def print_info(self):
-		print("Amount:" + str(self.amount))
-		print("Recipient:" + str(self.recipient))
-		print("Date:" + str(self.date))
+		print("Amount:     " + str(self.amount))
+		print("Recipient:  " + str(self.recipient))
+		print("Date:       " + str(self.date))
 		print("Method of Payment:" + str(self.method))
-		print("Comments:" + str(self.comments))
-		print("ID Number:" + str(self.id))
+		print("Comments:   " + str(self.comments))
+		print("ID Number:  " + str(self.id))
 
 
 class method_of_payment:
@@ -39,8 +39,8 @@ class organisation:
 def save_receipt(rcpt,filename):
 	line_to_save = str(rcpt.amount) + "," + str(rcpt.recipient) + "," + str(rcpt.date) + "," + str(rcpt.method) + "," + str(rcpt.comments) + "," + str(rcpt.id)
 	with open(filename, "a") as savefile:
-		savefile.write("\n")
 		savefile.write(line_to_save)
+		savefile.write("\n")
 		savefile.close()
 
 # Method to take a string with comma seperated values and create a receipt object out of it
@@ -93,6 +93,48 @@ def get_oganisations():
 	return list_of_organisations
 
 
+def add_income():
+	print("Entering a new income receipt..                            ")
+	amount = input("Enter the amount of money in the transaction:     ")
+	recipient = input("Enter where is the money from:                 ")
+	date = input("Enter the date of the transaction:                  ")
+	method = input("Enter the method(cash,debit e.t.c.):              ")
+	comments = input("Enter any comment about the transaction:        ")
+	id_number = input("Enter an id for the trasaction:                ")
+	print("Thanks..Creating receipt object..\n")
+	temp_receipt = receipt(amount,recipient,date,method,comments,id_number)
+	print("Object created.Saving to file..\n")
+	save_receipt(temp_receipt,"income.txt")
+	print("Done!\n")
+
+
+def add_expense():
+	print("Entering a new income receipt..                               ")
+	amount = input("Enter the amount of money in the transaction:        ")
+	recipient = input("Enter where the money whent(person/organisation): ")
+	date = input("Enter the date of the transaction:                     ")
+	method = input("Enter the method(cash,debit e.t.c.):                 ")
+	comments = input("Enter any comment about the transaction:           ")
+	id_number = input("Enter an id for the trasaction:                   ")
+	print("Thanks..Creating receipt object..\n")
+	temp_receipt = receipt(amount,recipient,date,method,comments,id_number)
+	print("Object created.Saving to file..\n")
+	save_receipt(temp_receipt,"expenses.txt")
+	print("Done!\n")
+
+def print_list(filename):
+		file = open(filename, "r")
+		line_list = [line.strip() for line in file]
+		file. close()
+		line_count = len(line_list)
+		counter = 0
+		while(counter<line_count):
+			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			temp_receipt = make_receipt(line_list[counter])
+			temp_receipt.print_info()
+			counter = counter + 1
+			print("\n")
+
 my_income = []
 my_expenses = []
 my_belongings = []
@@ -101,18 +143,21 @@ list_of_persons = []
 list_of_organisations = []
 
 
+choice = -1
 
-receipt1 = receipt("15","nikos","simera","cash","no_comment","459")
+while(choice!="0"):
+	if (choice == "1"):
+		add_income()
+	elif (choice == "2"):
+		add_expense()
+	elif(choice == "3"):
+		print_list("income.txt")
+	elif(choice == "4"):
+		print_list("expenses.txt")
 
-save_receipt(receipt1,"expenses.txt")
-
-my_expenses = get_expenses()
-print(my_expenses)
+	choice = input("1:add income, 2:add expense, 3:print income, 4:print expenses, 0:exit:   ")
 
 
-
-try_receipt = make_receipt("15,nikos,16/10/1999,cash,no comment,0")
-try_receipt.print_info()
 
 
 
