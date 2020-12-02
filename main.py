@@ -1,19 +1,29 @@
 
 class receipt:
-	def __init__(self,amount,recipient,date,method,comments,id):
-		self.amount = amount
-		self.recipient = recipient
-		self.date = date
-		self.method = method
-		self.comments = comments
-		self.id = 0
+	def __init__(self,amount = "",recipient = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
+			self.amount = ""
+			self.recipient = ""
+			self.date = ""
+			self.method = ""
+			self.comments = ""
+			self.id = ""
+
+	def user_init(self):
+			self.amount = input("Enter the amount of money in the transaction:        ")
+			self.recipient = input("Enter where the money whent(person/organisation):    ")
+			self.date = input("Enter the date of the transaction:                   ")
+			self.method = input("Enter the method(cash,debit e.t.c.):                 ")
+			self.comments = input("Enter any comment about the transaction:             ")
+			self.id = input("Enter an id for the trasaction:                      ")
+
+
 	def print_info(self):
-		print("Amount:     " + str(self.amount))
-		print("Recipient:  " + str(self.recipient))
-		print("Date:       " + str(self.date))
-		print("Method of Payment:" + str(self.method))
-		print("Comments:   " + str(self.comments))
-		print("ID Number:  " + str(self.id))
+		print("Amount:                " + str(self.amount))
+		print("Recipient:             " + str(self.recipient))
+		print("Date:                  " + str(self.date))
+		print("Method of Payment:     " + str(self.method))
+		print("Comments:              " + str(self.comments))
+		print("ID Number:             " + str(self.id))
 
 
 class method_of_payment:
@@ -48,6 +58,12 @@ def save_receipt(rcpt,filename):
 def make_receipt(string):
 	attr = string.split(",")  #split comma seperate elements
 	temp_receipt = receipt(attr[0],attr[1],attr[2],attr[3],attr[4],attr[5])  # make a receipt object with these attributes
+	temp_receipt.amount = attr[0]
+	temp_receipt.recipient = attr[1]
+	temp_receipt.date = attr[2]
+	temp_receipt.method = attr[3]
+	temp_receipt.comments = attr[4]
+	temp_receipt.i = attr[5]
 	return temp_receipt
 
 
@@ -94,30 +110,18 @@ def get_oganisations():
 
 
 def add_income():
-	print("Entering a new income receipt..                            ")
-	amount = input("Enter the amount of money in the transaction:     ")
-	recipient = input("Enter where is the money from:                 ")
-	date = input("Enter the date of the transaction:                  ")
-	method = input("Enter the method(cash,debit e.t.c.):              ")
-	comments = input("Enter any comment about the transaction:        ")
-	id_number = input("Enter an id for the trasaction:                ")
-	print("Thanks..Creating receipt object..\n")
-	temp_receipt = receipt(amount,recipient,date,method,comments,id_number)
+	print("Entering a new income receipt..")
+	temp_receipt = receipt()
+	temp_receipt.user_init()
 	print("Object created.Saving to file..\n")
 	save_receipt(temp_receipt,"income.txt")
 	print("Done!\n")
 
 
 def add_expense():
-	print("Entering a new income receipt..                               ")
-	amount = input("Enter the amount of money in the transaction:        ")
-	recipient = input("Enter where the money whent(person/organisation): ")
-	date = input("Enter the date of the transaction:                     ")
-	method = input("Enter the method(cash,debit e.t.c.):                 ")
-	comments = input("Enter any comment about the transaction:           ")
-	id_number = input("Enter an id for the trasaction:                   ")
-	print("Thanks..Creating receipt object..\n")
-	temp_receipt = receipt(amount,recipient,date,method,comments,id_number)
+	print("Entering a new income receipt..")
+	temp_receipt = receipt()
+	temp_receipt.user_init()
 	print("Object created.Saving to file..\n")
 	save_receipt(temp_receipt,"expenses.txt")
 	print("Done!\n")
@@ -129,7 +133,7 @@ def print_list(filename):
 		line_count = len(line_list)
 		counter = 0
 		while(counter<line_count):
-			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+			print("\n")
 			temp_receipt = make_receipt(line_list[counter])
 			temp_receipt.print_info()
 			counter = counter + 1
@@ -154,6 +158,8 @@ while(choice!="0"):
 		print_list("income.txt")
 	elif(choice == "4"):
 		print_list("expenses.txt")
+	else:
+		print("Please enter a valid option(0-4).\n")
 
 	choice = input("1:add income, 2:add expense, 3:print income, 4:print expenses, 0:exit:   ")
 
