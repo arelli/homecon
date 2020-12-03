@@ -156,56 +156,98 @@ def graphical_add_receipt():
 	# handle button events
 	def press(button):
 		if button == "Exit":
-			app.stop()
+			receipt_graphical.stop()
 		if button == "SaveAsIncome":
 			temp_receipt = receipt()
-			temp_receipt.amount = app.getEntry("Amount")
-			temp_receipt.recipient = app.getEntry("Recipient")
-			temp_receipt.sender = app.getEntry("Sender")
-			temp_receipt.date = app.getEntry("Date")
-			temp_receipt.method = app.getEntry("Method")
-			temp_receipt.comments = app.getEntry("Commends") 
-			temp_receipt.id =  app.getEntry("identification")
+			temp_receipt.amount = receipt_graphical.getEntry("Amount")
+			temp_receipt.sender = receipt_graphical.getEntry("Sender")
+			temp_receipt.recipient = receipt_graphical.getEntry("Recipient")
+			temp_receipt.date = receipt_graphical.getEntry("Date")
+			temp_receipt.method = receipt_graphical.getEntry("Method")
+			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
+			temp_receipt.id =  receipt_graphical.getEntry("identification")
 			save_receipt(temp_receipt,"income")
 			print("saved the income..\n")
-			app.stop()
+			receipt_graphical.stop()
 		if button == "SaveAsExpense":
 			temp_receipt = receipt()
+			temp_receipt.amount = receipt_graphical.getEntry("Amount")
+			temp_receipt.sender = receipt_graphical.getEntry("Sender")
+			temp_receipt.recipient = receipt_graphical.getEntry("Recipient")
+			temp_receipt.date = receipt_graphical.getEntry("Date")
+			temp_receipt.method = receipt_graphical.getEntry("Method")
+			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
+			temp_receipt.id =  receipt_graphical.getEntry("identification")
+			save_receipt(temp_receipt,"expenses")
+			print("saved the expenses..\n")
+			receipt_graphical.stop()
+
+	# create a GUI variable called receipt_graphical
+	receipt_graphical = gui("Receipt Adder", "500x400")
+	receipt_graphical.setBg("green")
+	receipt_graphical.setFont(15)
+
+	# add & configure widgets - widgets get a name, to help referencing them later
+	receipt_graphical.addLabel("title", "Add a Receipt")
+
+	receipt_graphical.addLabelEntry("Amount.............")
+	receipt_graphical.addLabelEntry("Sender.............")
+	receipt_graphical.addLabelEntry("Recipient..........")
+	receipt_graphical.addLabelEntry("Date...............")
+	receipt_graphical.addLabelEntry("Method.............")
+	receipt_graphical.addLabelEntry("Commends...........")
+	receipt_graphical.addLabelEntry("identification.....")
+
+	# link the buttons to the function called press
+	receipt_graphical.addButtons(["SaveAsIncome", "SaveAsExpense", "Exit"], press)
+
+	receipt_graphical.setFocus("Amount.............")
+	# start the GUI
+	receipt_graphical.go()
+
+def menu_graphical():
+	def launch(win):
+		app.showSubWindow(win)
+
+	app=gui()
+
+	# these go in the main window
+	app.addButtons(["AddIncome", ""], launch)
+
+	#this has all the button press functionality for subWindow 1
+	def press_income_window(button):
+		if button == "Save":
+			temp_receipt = receipt()
 			temp_receipt.amount = app.getEntry("Amount")
-			temp_receipt.recipient = app.getEntry("Recipient")
+			temp_receipt.sender = app.getEntry("Sender")
 			temp_receipt.recipient = app.getEntry("Recipient")
 			temp_receipt.date = app.getEntry("Date")
 			temp_receipt.method = app.getEntry("Method")
-			temp_receipt.comments = app.getEntry("Commends") 
-			temp_receipt.id =  app.getEntry("identification")
-			save_receipt(temp_receipt,"expenses")
-			print("saved the expenses..\n")
-			app.stop()
+			temp_receipt.comments = app.getEntry("Comments") 
+			temp_receipt.id =  app.getEntry("Id")
+			save_receipt(temp_receipt,"income")
+			print("saved the income..\n")
 
-	# create a GUI variable called app
-	app = gui("Receipt Adder", "500x400")
-	app.setBg("green")
-	app.setFont(15)
-
-	# add & configure widgets - widgets get a name, to help referencing them later
-	app.addLabel("title", "Add a Receipt")
-
+	# this is a pop-up
+	app.startSubWindow("AddIncome", modal=True)
+	app.addLabel("l1", "Add a Receipt")
 	app.addLabelEntry("Amount")
-	app.addLabelEntry("Recipient")
 	app.addLabelEntry("Sender")
+	app.addLabelEntry("Recipient")
 	app.addLabelEntry("Date")
 	app.addLabelEntry("Method")
-	app.addLabelEntry("Commends")
-	app.addLabelEntry("identification")
+	app.addLabelEntry("Comments")
+	app.addLabelEntry("Id")
+	app.addButtons(["Save"], press_income_window)
+	app.stopSubWindow()
 
-	# link the buttons to the function called press
-	app.addButtons(["SaveAsIncome", "SaveAsExpense", "Exit"], press)
-
-	app.setFocus("Amount")
-	# start the GUI
+	
+	
 	app.go()
 
 
+menu_graphical()
+"""  # The old menu
 choice = -1
 
 while(choice!="0"):
@@ -219,7 +261,7 @@ while(choice!="0"):
 		print("Please enter a valid option(0-3).\n")
 
 	choice = input("1:add receipt(income or expense), 2:print income, 3:print expenses, 0:exit:   ")
-
+"""
 
 
 
