@@ -2,9 +2,10 @@
 from appJar import gui
 
 class receipt:
-	def __init__(self,amount = "",recipient = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
+	def __init__(self,amount = "",recipient = "", sender = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
 			self.amount = ""
 			self.recipient = ""
+			self.sender = ""
 			self.date = ""
 			self.method = ""
 			self.comments = ""
@@ -12,7 +13,8 @@ class receipt:
 
 	def user_init(self):
 			self.amount = input("Enter the amount of money in the transaction:        ")
-			self.recipient = input("Enter where the money whent(person/organisation):    ")
+			self.recipient = input("Enter the recipient:                            ")
+			self.sender = input("Enter the sender:                                        ")
 			self.date = input("Enter the date of the transaction:                   ")
 			self.method = input("Enter the method(cash,debit e.t.c.):                 ")
 			self.comments = input("Enter any comment about the transaction:             ")
@@ -22,6 +24,7 @@ class receipt:
 	def print_info(self):
 		print("Amount:                " + str(self.amount))
 		print("Recipient:             " + str(self.recipient))
+		print("Sender:                " + str(self.sender))
 		print("Date:                  " + str(self.date))
 		print("Method of Payment:     " + str(self.method))
 		print("Comments:              " + str(self.comments))
@@ -49,7 +52,7 @@ class organisation:
 
 
 def save_receipt(rcpt,filename):
-	line_to_save = str(rcpt.amount) + "," + str(rcpt.recipient) + "," + str(rcpt.date) + "," + str(rcpt.method) + "," + str(rcpt.comments) + "," + str(rcpt.id)
+	line_to_save = str(rcpt.amount) + "," + str(rcpt.recipient) + "," + str(rcpt.sender) + "," + str(rcpt.date) + "," + str(rcpt.method) + "," + str(rcpt.comments) + "," + str(rcpt.id)
 	with open(filename, "a") as savefile:
 		savefile.write(line_to_save)
 		savefile.write("\n")
@@ -59,13 +62,14 @@ def save_receipt(rcpt,filename):
 # used to get receipt objects saved in the main memory
 def make_receipt(string):
 	attr = string.split(",")  #split comma seperate elements
-	temp_receipt = receipt(attr[0],attr[1],attr[2],attr[3],attr[4],attr[5])  # make a receipt object with these attributes
+	temp_receipt = receipt()  # make a receipt object with these attributes
 	temp_receipt.amount = attr[0]
 	temp_receipt.recipient = attr[1]
-	temp_receipt.date = attr[2]
-	temp_receipt.method = attr[3]
-	temp_receipt.comments = attr[4]
-	temp_receipt.id = attr[5]
+	temp_receipt.sender = attr[2]
+	temp_receipt.date = attr[3]
+	temp_receipt.method = attr[4]
+	temp_receipt.comments = attr[5]
+	temp_receipt.id = attr[6]
 	return temp_receipt
 
 
@@ -157,6 +161,7 @@ def graphical_add_receipt():
 			temp_receipt = receipt()
 			temp_receipt.amount = app.getEntry("Amount")
 			temp_receipt.recipient = app.getEntry("Recipient")
+			temp_receipt.sender = app.getEntry("Sender")
 			temp_receipt.date = app.getEntry("Date")
 			temp_receipt.method = app.getEntry("Method")
 			temp_receipt.comments = app.getEntry("Commends") 
@@ -167,6 +172,7 @@ def graphical_add_receipt():
 		if button == "SaveAsExpense":
 			temp_receipt = receipt()
 			temp_receipt.amount = app.getEntry("Amount")
+			temp_receipt.recipient = app.getEntry("Recipient")
 			temp_receipt.recipient = app.getEntry("Recipient")
 			temp_receipt.date = app.getEntry("Date")
 			temp_receipt.method = app.getEntry("Method")
@@ -186,6 +192,7 @@ def graphical_add_receipt():
 
 	app.addLabelEntry("Amount")
 	app.addLabelEntry("Recipient")
+	app.addLabelEntry("Sender")
 	app.addLabelEntry("Date")
 	app.addLabelEntry("Method")
 	app.addLabelEntry("Commends")
