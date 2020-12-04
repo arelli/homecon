@@ -1,4 +1,5 @@
 from appJar import gui
+from os import path
 
 class receipt:
 	def __init__(self,amount = "",recipient = "", sender = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
@@ -185,6 +186,18 @@ def add_expense():
 	save_receipt(temp_receipt,"expenses")
 	print("Done!\n")
 
+
+if(path.exists("persons")==False):
+	f = open("persons", "w")	
+	f.close()
+
+if(path.exists("income")==False):
+	f = open("income", "w")	
+	f.close()
+
+if(path.exists("expense")==False):
+	f = open("expense", "w")	
+	f.close()
 
 my_income = get_income()
 my_expenses =  get_expenses()
