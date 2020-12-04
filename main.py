@@ -56,7 +56,7 @@ class organisation:
 
 # save an object of the receipt class as a text, in a specified file by appending it as csv
 def save_receipt(rcpt,filename):
-	line_to_save = str(rcpt.amount) + "," + str(rcpt.recipient) + "," + str(rcpt.sender) + "," + str(rcpt.date) + "," + str(rcpt.method) + "," + str(rcpt.comments) + "," + str(rcpt.id)
+	line_to_save = str(rcpt.amount) + ", " + str(rcpt.recipient) + ", " + str(rcpt.sender) + ", " + str(rcpt.date) + ", " + str(rcpt.method) + ", " + str(rcpt.comments) + ", " + str(rcpt.id)
 	with open(filename, "a") as savefile:
 		savefile.write(line_to_save)
 		savefile.write("\n")
@@ -293,6 +293,7 @@ def menu_graphical():
 			temp_receipt.id =  app.getEntry("Id")
 			save_receipt(temp_receipt,"income")
 			print("saved the income..\n")
+			update_receipts_output_text()
 		if button == "SaveAsExpense":
 			temp_receipt = receipt()
 			temp_receipt.amount = app.getEntry("Amount")
@@ -304,6 +305,7 @@ def menu_graphical():
 			temp_receipt.id =  app.getEntry("Id")
 			save_receipt(temp_receipt,"expenses")
 			print("saved the expense..\n")
+			update_receipts_output_text()
 
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
@@ -338,20 +340,28 @@ def menu_graphical():
 	app.startSubWindow("ViewReceipts", modal=True)
 	app.addMessage("output","List of Transactions:")
 	app.addScrolledTextArea("output_text_area", text = None)
-	app.setTextArea("output_text_area", "Here is a list with all income:\n", end=False, callFunction=False)
 
-	counter = 0
-	while(counter<len(my_income)):
-		app.setTextArea("output_text_area", my_income[counter] + "\n" , end=True, callFunction=False) 
+	def update_receipts_output_text():
+		my_income = get_income()
+		my_expenses = get_expenses()
+		app.clearTextArea("output_text_area", callFunction=False)
+		app.setTextArea("output_text_area", "Here is a list with all income:\n\n", end=True, callFunction=False)
 		app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
-		counter = counter + 1
+		counter = 0
+		while(counter<len(my_income)):
+			app.setTextArea("output_text_area", my_income[counter] + "\n\n" , end=True, callFunction=False) 
+			app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
+			counter = counter + 1
 
-	app.setTextArea("output_text_area", "Here is a list with all expense:\n", end=False, callFunction=False)
-	counter = 0
-	while(counter<len(my_expenses)):
-		app.setTextArea("output_text_area", my_expenses[counter] + "\n" , end=True, callFunction=False) 
+		app.setTextArea("output_text_area", "Here is a list with all expense:\n", end=True, callFunction=False)
 		app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
-		counter = counter + 1
+		counter = 0
+		while(counter<len(my_expenses)):
+			app.setTextArea("output_text_area", my_expenses[counter] + "\n" , end=True, callFunction=False) 
+			app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
+			counter = counter + 1
+
+	update_receipts_output_text()
 
 	app.stopSubWindow()
 
