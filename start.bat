@@ -7,6 +7,7 @@ ECHO the folder appJar does not exist
 tar.exe -x -f appJar.zip
 echo uncompressing folder...
 python main.py
+del "appJar.zip"  /s /f /q
 pause
 
 :ENDOFSCRIPT
