@@ -187,6 +187,13 @@ def add_expense():
 	print("Done!\n")
 
 
+f = open("income", "w")
+f.close()
+f = open("expenses", "w")
+f.close()
+f = open("persons", "w")
+f.close()
+
 my_income = get_income()
 my_expenses =  get_expenses()
 my_belongings = []
@@ -194,12 +201,7 @@ list_of_methods = []
 list_of_persons = get_persons()
 list_of_organisations = []
 
-f = open("income", "w")
-f.close()
-f = open("expenses", "w")
-f.close()
-f = open("persons", "w")
-f.close()
+
 
 
 
