@@ -194,6 +194,14 @@ list_of_methods = []
 list_of_persons = get_persons()
 list_of_organisations = []
 
+f = open("income", "w")
+f.close()
+f = open("expenses", "w")
+f.close()
+f = open("persons", "w")
+f.close()
+
+
 
 # a one-window implementation of the add_receipt
 def graphical_add_receipt():
