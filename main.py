@@ -3,22 +3,22 @@ from appJar import gui
 
 class receipt:
 	def __init__(self,amount = "",recipient = "", sender = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
-			self.amount = ""
-			self.recipient = ""
-			self.sender = ""
-			self.date = ""
-			self.method = ""
-			self.comments = ""
-			self.id = ""
+		self.amount = ""
+		self.recipient = ""
+		self.sender = ""
+		self.date = ""
+		self.method = ""
+		self.comments = ""
+		self.id = ""
 
 	def user_init(self):
-			self.amount = input("Enter the amount of money in the transaction:        ")
-			self.recipient = input("Enter the recipient:                            ")
-			self.sender = input("Enter the sender:                                        ")
-			self.date = input("Enter the date of the transaction:                   ")
-			self.method = input("Enter the method(cash,debit e.t.c.):                 ")
-			self.comments = input("Enter any comment about the transaction:             ")
-			self.id = input("Enter an id for the trasaction:                      ")
+		self.amount = input("Enter the amount of money in the transaction:        ")
+		self.recipient = input("Enter the recipient:                            ")
+		self.sender = input("Enter the sender:                                        ")
+		self.date = input("Enter the date of the transaction:                   ")
+		self.method = input("Enter the method(cash,debit e.t.c.):                 ")
+		self.comments = input("Enter any comment about the transaction:             ")
+		self.id = input("Enter an id for the trasaction:                      ")
 
 	def print_info(self):
 		print("Amount:                " + str(self.amount))
@@ -28,6 +28,12 @@ class receipt:
 		print("Method of Payment:     " + str(self.method))
 		print("Comments:              " + str(self.comments))
 		print("id Number:             " + str(self.id))
+
+	def return_info(self):
+		return_string = str(self.amount) + ", " + str(self.recipient) + ", " + str(self.sender) + ", " 
+		return_string = return_string + str(self.date) + ", " + str(self.method) + ", " + str(self.comments) + "\n"
+		return return_string
+
 
 class method_of_payment:
 	def __init__(self,name,comments,id):
@@ -181,8 +187,8 @@ def add_expense():
 	print("Done!\n")
 
 
-my_income = []
-my_expenses = []
+my_income = get_income()
+my_expenses =  get_expenses()
 my_belongings = []
 list_of_methods = []
 list_of_persons = get_persons()
@@ -204,6 +210,7 @@ def graphical_add_receipt():
 			temp_receipt.method = receipt_graphical.getEntry("Method")
 			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
 			temp_receipt.id =  receipt_graphical.getEntry("identification")
+			receipt_graphical.clearAllEntries(callFunction=False)
 			save_receipt(temp_receipt,"income")
 			print("saved the income..\n")
 			receipt_graphical.stop()
@@ -216,6 +223,7 @@ def graphical_add_receipt():
 			temp_receipt.method = receipt_graphical.getEntry("Method")
 			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
 			temp_receipt.id =  receipt_graphical.getEntry("identification")
+			receipt_graphical.clearAllEntries(callFunction=False)
 			save_receipt(temp_receipt,"expenses")
 			print("saved the expenses..\n")
 			receipt_graphical.stop()
@@ -260,7 +268,7 @@ def menu_graphical():
 	app = gui("Homecon Manager", "500x400")
 	app.setBg("green")
 	app.setFont(12)
-	app.addLabel("title","Homecon Financial Manager")
+	app.addLabel("title","Homecon Financε Manager")
 	app.setLabelBg("title","orange")
 
 	# these go in the main window
@@ -300,11 +308,15 @@ def menu_graphical():
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
 
+	# get a string with all the persons names to use in autocomplete 
+	persons_names = get_persons_names(get_persons())
+
+
 	app.startSubWindow("AddReceipt", modal=True)
 	app.addLabel("l1", "Add a Receipt")
 	app.addNumericEntry("Amount")  # numeric entry to force number input only
-	app.addAutoEntry("Sender",get_persons_names(get_persons()))
-	app.addAutoEntry("Recipient",get_persons_names(get_persons()))
+	app.addAutoEntry("Sender",persons_names)
+	app.addAutoEntry("Recipient",persons_names)
 	app.addEntry("Date")
 	app.addAutoEntry("Method", ["cash", "bank deposit", "debit card","credit card","other"])
 	app.addEntry("Comments")
@@ -322,9 +334,25 @@ def menu_graphical():
 	app.stopSubWindow()
 
 
-	# add receipts sub window
+	# show receipts sub window
 	app.startSubWindow("ViewReceipts", modal=True)
-	app.addMessage("output","They are displayed in the terminal for now!")
+	app.addMessage("output","List of Transactions:")
+	app.addScrolledTextArea("output_text_area", text = None)
+	app.setTextArea("output_text_area", "Here is a list with all income:\n", end=False, callFunction=False)
+
+	counter = 0
+	while(counter<len(my_income)):
+		app.setTextArea("output_text_area", my_income[counter] + "\n" , end=True, callFunction=False) 
+		app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
+		counter = counter + 1
+
+	app.setTextArea("output_text_area", "Here is a list with all expense:\n", end=False, callFunction=False)
+	counter = 0
+	while(counter<len(my_expenses)):
+		app.setTextArea("output_text_area", my_expenses[counter] + "\n" , end=True, callFunction=False) 
+		app.setTextArea("output_text_area", "*******************\n", end=True, callFunction=False)
+		counter = counter + 1
+
 	app.stopSubWindow()
 
 
@@ -340,6 +368,10 @@ def menu_graphical():
 			temp_person.id = app.getEntry("person_id")
 			save_person(temp_person,"persons")
 			print("saved the person..\n")
+			persons_names = get_persons_names(get_persons())
+			app.changeAutoEntry("Sender",persons_names)  # update the persons list live
+			app.changeAutoEntry("Recipient",persons_names)
+			print("updated person catalog...")
 			app.hideSubWindow("AddPerson")
 			#save the persons info to the file
 
