@@ -36,7 +36,7 @@ class method_of_payment:
 		self.id = 0
 
 class person:
-	def __init__(self,name,surname,commments,id):
+	def __init__(self,name = "" ,surname = "",comments = "",id = ""):
 		self.name = name
 		self.surname = surname
 		self.comments = comments
@@ -70,6 +70,24 @@ def make_receipt(string):
 	temp_receipt.id = attr[6]
 	return temp_receipt
 
+
+def save_person(person,filename):
+	line_to_save = str(person.name) + "," + str(person.surname) + "," + str(person.comments) + "," + str(person.id)
+	with open(filename, "a") as savefile:
+		savefile.write(line_to_save)
+		savefile.write("\n")
+		savefile.close()
+
+def make_person(string):
+	attr = string.split(",")  #split comma seperate elements
+	temp_person = person()  # make a receipt object with these attributes
+	temp_person.name = attr[0]
+	temp_person.surname = attr[1]
+	temp_person.comments = attr[2]
+	temp_person.id = attr[3]
+	return temp_person
+
+
 # get list of income from file
 def get_income():
 	with open("income") as file:
@@ -97,12 +115,30 @@ def get_methods():
 	    list_of_methods = [line.strip() for line in file]
 	    file.close()
 	return list_of_methods
-# get list of persons from file
+
+# get list of persons objects from file
 def get_persons():
 	with open("persons") as file:
 	    list_of_persons = [line.strip() for line in file]
 	    file.close()
-	return list_of_persons
+
+	list_of_persons_objects = []
+	counter = 0
+	while(counter<len(list_of_persons)):
+		list_of_persons_objects.append(make_person(list_of_persons[counter]))
+		counter = counter+1
+
+	return list_of_persons_objects
+
+
+def get_persons_names(list_of_persons_objects):
+	list_of_persons_names = []
+	counter = 0
+	while(counter<len(list_of_persons_objects)):
+		list_of_persons_names.append(str(str(list_of_persons_objects[counter].name)+ " " +str(list_of_persons_objects[counter].surname)))
+		counter = counter + 1
+
+	return list_of_persons_names;  # a string with all names+surnames in the persons list
 
 #get list of organisations from file
 def get_oganisations():
@@ -118,12 +154,12 @@ def print_list(filename):
 		file. close()
 		line_count = len(line_list)
 		counter = 0
+		print("***Printing the list of file " + filename + "****")
 		while(counter<line_count):
-			print("\n")
+			print("*********Next Receipt*********")
 			temp_receipt = make_receipt(line_list[counter])
 			temp_receipt.print_info()
 			counter = counter + 1
-			print("\n")
 
 
 # add an income receipt from the terminal
@@ -149,7 +185,7 @@ my_income = []
 my_expenses = []
 my_belongings = []
 list_of_methods = []
-list_of_persons = []
+list_of_persons = get_persons()
 list_of_organisations = []
 
 
@@ -228,13 +264,14 @@ def menu_graphical():
 	app.setLabelBg("title","orange")
 
 	# these go in the main window
-	app.addButtons(["AddReceipt"], launch)
+	app.addButtons(["AddReceipt","AddPerson"], launch)
 
 	app.addButtons(["ViewReceipts"], main_gui_press)
 
 	app.addButtons(["Exit"],main_gui_press)
 
 
+	# add receipt PopUp
 	#this has all the button press functionality for subWindow 1
 	def press_receipt_window(button):
 		if button == "SaveAsIncome":
@@ -263,29 +300,68 @@ def menu_graphical():
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
 
-
-	# this is a pop-up
 	app.startSubWindow("AddReceipt", modal=True)
 	app.addLabel("l1", "Add a Receipt")
-	app.addLabelEntry("Amount")
-	app.addLabelEntry("Sender")
-	app.addLabelEntry("Recipient")
-	app.addLabelEntry("Date")
-	app.addLabelEntry("Method")
-	app.addLabelEntry("Comments")
-	app.addLabelEntry("Id")
+	app.addNumericEntry("Amount")  # numeric entry to force number input only
+	app.addAutoEntry("Sender",get_persons_names(get_persons()))
+	app.addAutoEntry("Recipient",get_persons_names(get_persons()))
+	app.addEntry("Date")
+	app.addAutoEntry("Method", ["cash", "bank deposit", "debit card","credit card","other"])
+	app.addEntry("Comments")
+	app.addEntry("Id")
+
+	app.setEntryDefault("Amount", "The amount of money here")  # this sets the "title" inside the text field
+	app.setEntryDefault("Sender","Enter who sent the money")
+	app.setEntryDefault("Recipient", "Enter who received the money")
+	app.setEntryDefault("Date", "Enter Date of transaction")
+	app.setEntryDefault("Method", "method of payment, e.g. cash")
+	app.setEntryDefault("Comments", "any comments here")
+	app.setEntryDefault("Id", "please leave this empty")
+
 	app.addButtons(["SaveAsIncome", "SaveAsExpense"], press_receipt_window)
 	app.stopSubWindow()
 
+
+	# add receipts sub window
 	app.startSubWindow("ViewReceipts", modal=True)
 	app.addMessage("output","They are displayed in the terminal for now!")
 	app.stopSubWindow()
+
+
+	#add person pop-Up
+	def press_person_window(button):
+		if button == "Cancel":
+			app.hideSubWindow("AddPerson")
+		if button == "SavePerson":
+			temp_person = person()
+			temp_person.name = app.getEntry("Name")
+			temp_person.surname = app.getEntry("Surname")
+			temp_person.comments = app.getEntry("person_comments")
+			temp_person.id = app.getEntry("person_id")
+			save_person(temp_person,"persons")
+			print("saved the person..\n")
+			app.hideSubWindow("AddPerson")
+			#save the persons info to the file
+
+	app.startSubWindow("AddPerson", modal=True)
+	app.addLabel("title_addperson", "Add a Person")
+	app.addEntry("Name")
+	app.addEntry("Surname")
+	app.addEntry("person_comments")
+	app.addEntry("person_id")
+
+	app.setEntryDefault("Name","Name")
+	app.setEntryDefault("Surname","Surname")
+	app.setEntryDefault("person_comments","Comments here")
+	app.setEntryDefault("person_id","id-leave as is")
+	app.addButtons(["SavePerson", "Cancel"], press_person_window)
 	
 	
 	app.go()
 
 # start the gui
 menu_graphical()
+
 
 
 
