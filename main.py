@@ -183,7 +183,6 @@ def get_total_expense(input_list):
 		temp_receipt = make_receipt(input_list[counter])
 		counter_of_expense += float(temp_receipt.amount)
 		counter += 1
-	print(counter_of_expense)
 	return counter_of_expense
 
 
@@ -232,8 +231,8 @@ def menu_graphical():
 	app.setBg("green")
 	app.setFont(12)
 	app.addLabel("title","Homεcon Finance Manager")
-	app.addLabel("total_income","total income: " + str(total_income) )
-	app.addLabel("total_expense","total expense: " + str(total_expense) )
+	app.addLabel("total_income","total income: " + str(get_total_income(get_income())) )
+	app.addLabel("total_expense","total expense: " + str(get_total_expense(get_expenses())) )
 	app.setLabelBg("title","orange")
 
 	# these go in the main window
@@ -241,8 +240,12 @@ def menu_graphical():
 
 	app.addButtons(["ViewReceipts"], main_gui_press)
 
-	if(total_expense>0 and total_income>0):
+	total_expense = get_total_expense(get_expenses())
+	total_income = get_total_income(get_income())
+	has_pie_chart = False
+	if(total_expense>0 and total_income>0 and has_pie_chart == False):
 		app.addPieChart("p1", {"income":total_income, "expense":total_expense})
+		has_pie_chart = True
 
 	app.addButtons(["Exit"],main_gui_press)
 
@@ -282,10 +285,13 @@ def menu_graphical():
 			update_receipts_output_text()
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
+		total_expense = get_total_expense(get_expenses())
+		total_income = get_total_income(get_income())
 		if(total_expense>0 and total_income>0):
-				app.setPieChart("p1", "expense", total_expense )
-		if(total_expense>0 and total_income>0):
-				app.setPieChart("p1", "income",total_income)  # update live the income on the pi chart
+			if has_pie_chart == False:	
+				app.addPieChart("p1", {"income":total_income, "expense":total_expense})	
+			app.setPieChart("p1", "expense", total_expense )
+			app.setPieChart("p1", "income",total_income)  # update live the income on the pi chart
 
 				
 
