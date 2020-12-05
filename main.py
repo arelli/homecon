@@ -286,6 +286,7 @@ def menu_graphical():
 			update_receipts_output_text()
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
+		app.setLabel("balance: " , "Balance:   " + str(int(int(get_total_income(get_income())) - int(get_total_expense(get_expenses())))))
 		total_expense = get_total_expense(get_expenses())
 		total_income = get_total_income(get_income())
 		if(total_expense>0 and total_income>0):
