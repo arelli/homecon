@@ -36,11 +36,6 @@ class receipt:
 		return return_string
 
 
-class method_of_payment:
-	def __init__(self,name,comments,id):
-		self.name = name
-		self.comments = comments
-		self.id = 0
 
 class person:
 	def __init__(self,name = "" ,surname = "",comments = "",id = ""):
@@ -49,11 +44,7 @@ class person:
 		self.comments = comments
 		self.id = 0
 
-class organisation:
-	def __init__(self,name,comments):
-		self.name = name
-		self.comments = comments
-		self.id = 0
+
 
 # save an object of the receipt class as a text, in a specified file by appending it as csv
 def save_receipt(rcpt,filename):
@@ -109,19 +100,6 @@ def get_expenses():
 	    file.close()
 	return my_expenses
 
-# get list of belongings from file
-def get_belongings():
-	with open("belongings") as file:
-	    my_belongings = [line.strip() for line in file]
-	    file.close()
-	return my_belongings
-
-# get list of methods from file
-def get_methods():
-	with open("methods") as file:
-	    list_of_methods = [line.strip() for line in file]
-	    file.close()
-	return list_of_methods
 
 # get list of persons objects from file
 def get_persons():
@@ -235,61 +213,6 @@ total_expense = get_total_expense(my_expenses)
 total_income = get_total_income(my_income)
 
 
-# a one-window implementation of the add_receipt
-def graphical_add_receipt():
-	# handle button events
-	def press(button):
-		if button == "Exit":
-			receipt_graphical.stop()
-		if button == "SaveAsIncome":
-			temp_receipt = receipt()
-			temp_receipt.amount = receipt_graphical.getEntry("Amount")
-			temp_receipt.sender = receipt_graphical.getEntry("Sender")
-			temp_receipt.recipient = receipt_graphical.getEntry("Recipient")
-			temp_receipt.date = receipt_graphical.getEntry("Date")
-			temp_receipt.method = receipt_graphical.getEntry("Method")
-			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
-			temp_receipt.id =  receipt_graphical.getEntry("identification")
-			receipt_graphical.clearAllEntries(callFunction=False)
-			save_receipt(temp_receipt,"income")
-			print("saved the income..\n")
-			receipt_graphical.stop()
-		if button == "SaveAsExpense":
-			temp_receipt = receipt()
-			temp_receipt.amount = receipt_graphical.getEntry("Amount")
-			temp_receipt.sender = receipt_graphical.getEntry("Sender")
-			temp_receipt.recipient = receipt_graphical.getEntry("Recipient")
-			temp_receipt.date = receipt_graphical.getEntry("Date")
-			temp_receipt.method = receipt_graphical.getEntry("Method")
-			temp_receipt.comments = receipt_graphical.getEntry("Commends") 
-			temp_receipt.id =  receipt_graphical.getEntry("identification")
-			receipt_graphical.clearAllEntries(callFunction=False)
-			save_receipt(temp_receipt,"expenses")
-			print("saved the expenses..\n")
-			receipt_graphical.stop()
-
-	# create a GUI variable called receipt_graphical
-	receipt_graphical = gui("Receipt Adder", "500x400")
-	receipt_graphical.setBg("green")
-	receipt_graphical.setFont(15)
-
-	# add & configure widgets - widgets get a name, to help referencing them later
-	receipt_graphical.addLabel("title", "Add a Receipt")
-
-	receipt_graphical.addLabelEntry("Amount.............")
-	receipt_graphical.addLabelEntry("Sender.............")
-	receipt_graphical.addLabelEntry("Recipient..........")
-	receipt_graphical.addLabelEntry("Date...............")
-	receipt_graphical.addLabelEntry("Method.............")
-	receipt_graphical.addLabelEntry("Commends...........")
-	receipt_graphical.addLabelEntry("identification.....")
-
-	# link the buttons to the function called press
-	receipt_graphical.addButtons(["SaveAsIncome", "SaveAsExpense", "Exit"], press)
-
-	receipt_graphical.setFocus("Amount.............")
-	# start the GUI
-	receipt_graphical.go()
 
 # a main menu window that supports subwindows
 def menu_graphical():
@@ -318,7 +241,8 @@ def menu_graphical():
 
 	app.addButtons(["ViewReceipts"], main_gui_press)
 
-	app.addPieChart("p1", {"income":total_income, "expense":total_expense})
+	if(total_expense>0 and total_income>0):
+		app.addPieChart("p1", {"income":total_income, "expense":total_expense})
 
 	app.addButtons(["Exit"],main_gui_press)
 
@@ -341,7 +265,6 @@ def menu_graphical():
 			print("saved the income..\n")
 			total_income = get_total_income(get_income())
 			app.setLabel("total_income","total income: " + str(total_income))  # update live the income
-			app.setPieChart("p1", "income",total_income)  # update live the income on the pi chart
 			update_receipts_output_text()
 		if button == "SaveAsExpense":
 			temp_receipt = receipt()
@@ -356,11 +279,15 @@ def menu_graphical():
 			print("saved the expense..\n")
 			total_expense = get_total_expense(get_expenses())
 			app.setLabel("total_expense","total expense: " + str(total_expense))
-			app.setPieChart("p1", "expense", total_expense )
 			update_receipts_output_text()
-
 		#the subwindows never really close. They can only be hidden after use
 		app.hideSubWindow("AddReceipt")
+		if(total_expense>0 and total_income>0):
+				app.setPieChart("p1", "expense", total_expense )
+		if(total_expense>0 and total_income>0):
+				app.setPieChart("p1", "income",total_income)  # update live the income on the pi chart
+
+				
 
 	# get a string with all the persons names to use in autocomplete 
 	persons_names = get_persons_names(get_persons())
@@ -424,8 +351,6 @@ def menu_graphical():
 	update_receipts_output_text()
 
 	app.stopSubWindow()
-
-
 
 
 	#add person pop-Up
