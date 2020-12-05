@@ -1,6 +1,7 @@
 from appJar import gui
 from os import path
 
+
 class receipt:
 	def __init__(self,amount = "",recipient = "", sender = "" ,date = "" ,method = "" ,comments = "" ,id = ""):
 		self.amount = ""
@@ -99,7 +100,7 @@ def get_income():
 	with open("income") as file:
 	    my_income = [line.strip() for line in file]
 	    file.close()
-	return my_income;
+	return my_income;  # list of strings of objects
 
 # get list of expenses from file
 def get_expenses():
@@ -187,6 +188,27 @@ def add_expense():
 	print("Done!\n")
 
 
+def get_total_income(input_list):
+	counter = 0
+	counter_of_income = 0
+	while(counter < len(input_list)):
+		temp_receipt = make_receipt(input_list[counter])
+		counter_of_income += float(temp_receipt.amount)
+		counter += 1
+	print(counter_of_income)
+	return counter_of_income
+
+def get_total_expense(input_list):
+	counter = 0
+	counter_of_expense = 0
+	while(counter < len(input_list)):
+		temp_receipt = make_receipt(input_list[counter])
+		counter_of_expense += float(temp_receipt.amount)
+		counter += 1
+	print(counter_of_expense)
+	return counter_of_expense
+
+
 if(path.exists("persons")==False):
 	f = open("persons", "w")	
 	f.close()
@@ -195,8 +217,8 @@ if(path.exists("income")==False):
 	f = open("income", "w")	
 	f.close()
 
-if(path.exists("expense")==False):
-	f = open("expense", "w")	
+if(path.exists("expenses")==False):
+	f = open("expenses", "w")	
 	f.close()
 
 my_income = get_income()
@@ -205,6 +227,12 @@ my_belongings = []
 list_of_methods = []
 list_of_persons = get_persons()
 list_of_organisations = []
+
+total_expense = 0
+total_income = 0
+
+total_expense = get_total_expense(my_expenses)
+total_income = get_total_income(my_income)
 
 
 # a one-window implementation of the add_receipt
@@ -277,10 +305,12 @@ def menu_graphical():
 			print_list("income")
 			app.showSubWindow("ViewReceipts")
 
-	app = gui("Homecon Manager", "500x400")
+	app = gui("Homecon Manager", "700x600")
 	app.setBg("green")
 	app.setFont(12)
-	app.addLabel("title","Homecon Financε Manager")
+	app.addLabel("title","Homεcon Finance Manager")
+	app.addLabel("total_income","total income: " + str(total_income) )
+	app.addLabel("total_expense","total expense: " + str(total_expense) )
 	app.setLabelBg("title","orange")
 
 	# these go in the main window
@@ -288,7 +318,11 @@ def menu_graphical():
 
 	app.addButtons(["ViewReceipts"], main_gui_press)
 
+	app.addPieChart("p1", {"income":total_income, "expense":total_expense})
+
 	app.addButtons(["Exit"],main_gui_press)
+
+	app.addWebLink("github.com/arelli", "http://github.com/arelli")
 
 
 	# add receipt PopUp
@@ -305,6 +339,9 @@ def menu_graphical():
 			temp_receipt.id =  app.getEntry("Id")
 			save_receipt(temp_receipt,"income")
 			print("saved the income..\n")
+			total_income = get_total_income(get_income())
+			app.setLabel("total_income","total income: " + str(total_income))  # update live the income
+			app.setPieChart("p1", "income",total_income)  # update live the income on the pi chart
 			update_receipts_output_text()
 		if button == "SaveAsExpense":
 			temp_receipt = receipt()
@@ -317,6 +354,9 @@ def menu_graphical():
 			temp_receipt.id =  app.getEntry("Id")
 			save_receipt(temp_receipt,"expenses")
 			print("saved the expense..\n")
+			total_expense = get_total_expense(get_expenses())
+			app.setLabel("total_expense","total expense: " + str(total_expense))
+			app.setPieChart("p1", "expense", total_expense )
 			update_receipts_output_text()
 
 		#the subwindows never really close. They can only be hidden after use
@@ -347,9 +387,17 @@ def menu_graphical():
 	app.addButtons(["SaveAsIncome", "SaveAsExpense"], press_receipt_window)
 	app.stopSubWindow()
 
+	def search_in_text(button):
+		if button == "Search":
+			app.searchTextArea("output_text_area", app.getEntry("Search"), start=None, stop=None, nocase=True, backwards=False)
 
 	# show receipts sub window
 	app.startSubWindow("ViewReceipts", modal=True)
+	app.setSize(400, 400)
+	app.setBg("green")
+	app.addEntry("Search")
+	app.setEntryDefault("Search", "Enter your search term here")
+	app.addButton("Search", search_in_text)
 	app.addMessage("output","List of Transactions:")
 	app.addScrolledTextArea("output_text_area", text = None)
 
@@ -376,6 +424,8 @@ def menu_graphical():
 	update_receipts_output_text()
 
 	app.stopSubWindow()
+
+
 
 
 	#add person pop-Up
