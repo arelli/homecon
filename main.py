@@ -233,6 +233,7 @@ def menu_graphical():
 	app.addLabel("title","Homεcon Finance Manager")
 	app.addLabel("total_income","total income: " + str(get_total_income(get_income())) )
 	app.addLabel("total_expense","total expense: " + str(get_total_expense(get_expenses())) )
+	app.addLabel("balance: " , "Balance:   " + str(int(int(get_total_income(get_income())) - int(get_total_expense(get_expenses())))))
 	app.setLabelBg("title","orange")
 
 	# these go in the main window
